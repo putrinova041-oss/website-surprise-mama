@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Happy Birthday Mama Asiani!</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'Quicksand', sans-serif;
+    background: #fff0f3;
+    overflow: hidden;
+    touch-action: manipulation;
+  }
+  .slide {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 1;
+  }
+  .slide.active { display: flex; }
+
+  /* Backgrounds */
+  .bg-main { background: url('bg_main.jpg') center/cover no-repeat; }
+  .bg-letter { background: url('bg_letter.jpg') center/cover no-repeat; }
+  .bg-loading { background: #fff5f0; }
+  .bg-cutscene { background: #2a1f1d; }
+
+  /* Intro */
+  #slide-intro .mom-popup {
+    width: 280px;
+    max-width: 80vw;
+    animation: popIn 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+    filter: drop-shadow(0 15px 30px rgba(0,0,0,0.25));
+    border-radius: 20px;
+  }
+  @keyframes popIn {
+    0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+    70% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+  .tap-hint {
+    position: absolute;
+    bottom: 60px;
+    color: #8b4513;
+    font-size: 16px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.8);
+    padding: 8px 20px;
+    border-radius: 20px;
+    animation: bounce 1.5s infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* Cutscene */
+  .cutscene-container {
+    position: relative;
+    width: 100%; height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .cutscene-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+    position: absolute;
+  }
+  .cutscene-img.show { opacity: 1; }
+  .flash-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: white;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .flash-overlay.flash { animation: flashAnim 0.6s ease-out; }
+  @keyframes flashAnim {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* Loading */
+  .loading-wrap {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .loading-img {
+    width: 220px;
+    max-width: 60vw;
+    margin-bottom: 25px;
+    animation: breathe 2s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+  }
+  .progress-track {
+    width: 280px;
+    max-width: 70vw;
+    height: 28px;
+    background: #ffe4e1;
+    border-radius: 20px;
+    border: 3px solid #ffb6c1;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ffb6c1, #ff69b4, #ffb6c1);
+    background-size: 200% 100%;
+    border-radius: 20px;
+    animation: shimmer 1s linear infinite, loadProgress 3s ease-out forwards;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  @keyframes loadProgress {
+    0% { width: 0%; }
+    100% { width: 100%; }
+  }
+  .loading-text {
+    margin-top: 15px;
+    color: #8b4513;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .loading-text::after {
+    content: '...';
+    animation: dots 1.5s steps(4, end) infinite;
+  }
+  @keyframes dots {
+    0%, 20% { content: ''; }
+    40% { content: '.'; }
+    60% { content: '..'; }
+    80%, 100% { content: '...'; }
+  }
+
+  /* Password */
+  .password-card {
+    background: rgba(255,255,255,0.92);
+    padding: 35px 25px;
+    border-radius: 30px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(255,182,193,0.4);
+    border: 3px solid #ffb6c1;
+    width: 320px;
+    max-width: 85vw;
+    position: relative;
+  }
+  .pwd-title {
+    font-size: 22px;
+    color: #6d4c41;
+    margin-bottom: 20px;
+    font-weight: 700;
+  }
+  .pwd-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .pwd-input {
+    width: 55px;
+    height: 65px;
+    border: 3px solid #ffb6c1;
+    border-radius: 14px;
+    font-size: 28px;
+    text-align: center;
+    background: #fff8f8;
+    color: #ff69b4;
+    font-weight: 700;
+    font-family: 'Quicksand', sans-serif;
+    box-shadow: inset 0 3px 8px rgba(0,0,0,0.06);
+    transition: all 0.2s;
+    -webkit-appearance: none;
+  }
+  .pwd-input:focus {
+    outline: none;
+    border-color: #ff69b4;
+    transform: scale(1.08);
+    background: white;
+  }
+  .enter-btn {
+    background: linear-gradient(135deg, #ffb6c1, #ff69b4);
+    color: white;
+    border: none;
+    padding: 14px 45px;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(255,105,180,0.35);
+    transition: all 0.2s;
+    font-family: 'Quicksand', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .enter-btn:active { transform: scale(0.95); }
+  .enter-btn:hover { transform: scale(1.05); }
+  .paw-print { font-size: 20px; }
+  .pwd-error {
+    color: #ff4444;
+    font-size: 13px;
+    margin-top: 8px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    height: 18px;
+  }
+  .pwd-error.show { opacity: 1; }
+
+  /* Home / Base */
+  .home-card {
+    width: 90%;
+    max-width: 420px;
+    background: rgba(255,255,255,0.88);
+    border-radius: 25px;
+    padding: 22px;
+    border: 3px solid #ffb6c1;
+    box-shadow: 0 12px 35px rgba(255,182,193,0.25);
+    max-height: 75vh;
+    overflow-y: auto;
+  }
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 18px;
+    padding-bottom: 15px;
+    border-bottom: 2px dashed #ffb6c1;
+  }
+  .avatar {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    border: 3px solid #ffb6c1;
+    object-fit: cover;
+    background: #fff0f3;
+  }
+  .profile-meta h3 {
+    font-size: 20px;
+    color: #6d4c41;
+    margin-bottom: 4px;
+  }
+  .profile-meta p {
+    font-size: 13px;
+    color: #8d6e63;
+    margin: 2px 0;
+  }
+  .section-title {
+    font-size: 16px;
+    color: #ff69b4;
+    margin-bottom: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .wish-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,182,193,0.15);
+    padding: 14px;
+    border-radius: 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.25s;
+    border: 2px solid transparent;
+  }
+  .wish-card:hover {
+    transform: translateX(5px);
+    border-color: #ffb6c1;
+    background: rgba(255,182,193,0.25);
+  }
+  .wish-icon-box {
+    width: 45px;
+    height: 45px;
+    background: #ffe4e1;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .wish-label {
+    font-size: 16px;
+    color: #5d4037;
+    font-weight: 600;
+  }
+
+  /* Bottom Nav */
+  .bottom-nav {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    background: rgba(255,255,255,0.93);
+    padding: 10px 18px;
+    border-radius: 30px;
+    border: 3px solid #ffb6c1;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    z-index: 50;
+  }
+  .nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 6px 14px;
+    border-radius: 18px;
+    border: 2px solid transparent;
+    background: transparent;
+    font-family: 'Quicksand', sans-serif;
+    color: #6d4c41;
+    font-weight: 700;
+    font-size: 11px;
+    gap: 4px;
+  }
+  .nav-btn .nav-emoji { font-size: 26px; line-height: 1; }
+  .nav-btn.active {
+    border: 2px solid #ff69b4;
+    background: rgba(255,182,193,0.2);
+    color: #ff69b4;
+  }
+  .nav-btn:active { transform: scale(0.9); }
+
+  /* Letter */
+  .letter-card {
+    width: 92%;
+    max-width: 440px;
+    height: 82vh;
+    background: rgba(255,255,255,0.93);
+    border-radius: 20px;
+    padding: 25px;
+    position: relative;
+    overflow-y: auto;
+    border: 3px solid #ffb6c1;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+  }
+  .letter-close {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #ffb6c1;
+    color: white;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.2s;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+  }
+  .letter-close:hover { background: #ff69b4; transform: rotate(90deg); }
+  .letter-from-title {
+    font-size: 22px;
+    color: #ff69b4;
+    font-weight: 700;
+    margin-bottom: 15px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .letter-body {
+    font-size: 15px;
+    line-height: 1.85;
+    color: #4e342e;
+    white-space: pre-wrap;
+  }
+  .letter-stamp {
+    position: absolute;
+    bottom: 20px; right: 20px;
+    font-size: 50px;
+    opacity: 0.15;
+    transform: rotate(-15deg);
+  }
+
+  /* Game Intro */
+  .game-intro-box {
+    text-align: center;
+    background: rgba(255,255,255,0.9);
+    padding: 35px;
+    border-radius: 25px;
+    border: 3px solid #ffb6c1;
+    box-shadow: 0 12px 35px rgba(255,182,193,0.3);
+  }
+  .cake-illus {
+    font-size: 100px;
+    margin-bottom: 5px;
+    animation: float 2.5s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(2deg); }
+  }
+  .game-title {
+    font-size: 24px;
+    color: #ff69b4;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+  .game-sub {
+    font-size: 14px;
+    color: #8d6e63;
+    margin-bottom: 20px;
+  }
+  .start-btn {
+    background: linear-gradient(135deg, #ffb6c1, #ff69b4);
+    color: white;
+    border: none;
+    padding: 16px 55px;
+    border-radius: 30px;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(255,105,180,0.35);
+    transition: all 0.2s;
+    font-family: 'Quicksand', sans-serif;
+  }
+  .start-btn:active { transform: scale(0.95); }
+
+  /* Cake Builder */
+  .builder-wrap {
+    width: 92%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255,255,255,0.85);
+    padding: 20px;
+    border-radius: 25px;
+    border: 3px solid #ffb6c1;
+  }
+  .cake-stage {
+    width: 220px;
+    height: 220px;
+    position: relative;
+    margin-bottom: 15px;
+  }
+  .stand-plate {
+    position: absolute;
+    bottom: 15px; left: 50%;
+    transform: translateX(-50%);
+    width: 190px; height: 18px;
+    background: #ffb6c1;
+    border-radius: 10px;
+    border: 2px solid #ff69b4;
+    z-index: 1;
+  }
+  .stand-base {
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 70px; height: 15px;
+    background: #ffb6c1;
+    border-radius: 0 0 8px 8px;
+    border: 2px solid #ff69b4;
+    border-top: none;
+    z-index: 1;
+  }
+  .stand-stem {
+    position: absolute;
+    bottom: 10px; left: 50%;
+    transform: translateX(-50%);
+    width: 25px; height: 20px;
+    background: #ffb6c1;
+    border: 2px solid #ff69b4;
+    border-bottom: none;
+    z-index: 1;
+  }
+  .cake-body {
+    position: absolute;
+    bottom: 35px; left: 50%;
+    transform: translateX(-50%);
+    width: 160px; height: 100px;
+    background: #fde6d3;
+    border-radius: 8px 8px 35px 35px;
+    border: 2px solid #e6c2a0;
+    z-index: 2;
+    box-shadow: inset 0 -10px 20px rgba(0,0,0,0.05);
+  }
+  .cake-body::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -2px; right: -2px;
+    height: 25px;
+    background: #fde6d3;
+    border-radius: 50%;
+    border: 2px solid #e6c2a0;
+    border-bottom: none;
+    z-index: 3;
+  }
+  .layer-butter {
+    position: absolute;
+    bottom: 125px; left: 50%;
+    transform: translateX(-50%);
+    width: 168px; height: 22px;
+    border-radius: 12px;
+    z-index: 4;
+    display: none;
+    border: 2px solid rgba(0,0,0,0.08);
+  }
+  .layer-butter.show { display: block; }
+  .layer-ganache {
+    position: absolute;
+    bottom: 140px; left: 50%;
+    transform: translateX(-50%);
+    width: 168px; height: 28px;
+    border-radius: 5px 5px 15px 15px;
+    z-index: 5;
+    display: none;
+    overflow: visible;
+  }
+  .layer-ganache.show { display: block; }
+  .ganache-drip {
+    position: absolute;
+    top: 0;
+    width: 12px; height: 30px;
+    background: inherit;
+    border-radius: 0 0 10px 10px;
+  }
+  .layer-topper {
+    position: absolute;
+    bottom: 165px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 45px;
+    z-index: 6;
+    display: none;
+    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.15));
+  }
+  .layer-topper.show { display: block; }
+  .layer-candles {
+    position: absolute;
+    bottom: 175px; left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    gap: 18px;
+    z-index: 6;
+    justify-content: center;
+  }
+  .layer-candles.show { display: flex; }
+  .candle-emoji {
+    font-size: 28px;
+    position: relative;
+  }
+  .flame {
+    position: absolute;
+    top: -10px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    animation: flicker 0.4s ease-in-out infinite alternate;
+  }
+  .flame.out { display: none; }
+  @keyframes flicker {
+    0% { transform: translateX(-50%) scale(1); }
+    100% { transform: translateX(-50%) scale(1.2) translateY(-2px); }
+  }
+
+  .options-panel {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    min-height: 55px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .opt-btn {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    border: 2px solid #ddd;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .opt-btn:hover { transform: scale(1.1); border-color: #ffb6c1; }
+  .opt-btn.selected {
+    border-color: #ff69b4;
+    background: #ffe4e1;
+    transform: scale(1.12);
+    box-shadow: 0 3px 10px rgba(255,105,180,0.2);
+  }
+
+  .cat-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .cat-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 14px;
+    border: 2px solid #ffb6c1;
+    background: white;
+    cursor: pointer;
+    font-size: 11px;
+    color: #6d4c41;
+    font-weight: 700;
+    transition: all 0.2s;
+    font-family: 'Quicksand', sans-serif;
+    min-width: 65px;
+    position: relative;
+  }
+  .cat-btn .cat-emoji { font-size: 22px; margin-bottom: 3px; }
+  .cat-btn.active {
+    background: #ffb6c1;
+    color: white;
+    border-color: #ff69b4;
+  }
+  .cat-btn.done { border-color: #32cd32; background: #f0fff0; }
+
+  .builder-check {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    background: #90ee90;
+    border: 3px solid #32cd32;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    animation: pulse 1.2s infinite;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+  }
+  .builder-check.show { display: flex; }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(144,238,144,0.7); }
+    50% { transform: scale(1.08); box-shadow: 0 0 0 10px rgba(144,238,144,0); }
+  }
+
+  /* Final Cake / Make Wish / Blow */
+  .final-cake-wrap {
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+  }
+  .final-cake-stage {
+    width: 240px; height: 240px;
+    position: relative;
+    margin: 0 auto 20px;
+    transform: scale(1.1);
+  }
+  .action-btn {
+    background: linear-gradient(135deg, #ffb6c1, #ff69b4);
+    color: white;
+    border: none;
+    padding: 14px 35px;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(255,105,180,0.3);
+    transition: all 0.2s;
+    font-family: 'Quicksand', sans-serif;
+    margin-top: 10px;
+  }
+  .action-btn:hover { transform: scale(1.05); }
+  .action-btn:active { transform: scale(0.95); }
+  .wish-input-area {
+    width: 100%;
+    padding: 15px;
+    border-radius: 15px;
+    border: 2px solid #ffb6c1;
+    font-size: 16px;
+    font-family: 'Quicksand', sans-serif;
+    margin: 15px 0;
+    resize: none;
+    min-height: 100px;
+  }
+  .wish-input-area:focus { outline: none; border-color: #ff69b4; }
+
+  .wind-layer {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%; height: 0%;
+    background: linear-gradient(to top, rgba(255,255,255,0.95), rgba(255,255,255,0.7));
+    z-index: 100;
+    transition: height 1.8s ease-out;
+    pointer-events: none;
+  }
+  .wind-layer.blow { height: 100%; }
+
+  /* Profile */
+  .profile-card {
+    width: 90%;
+    max-width: 420px;
+    background: rgba(255,255,255,0.9);
+    padding: 30px 25px;
+    border-radius: 25px;
+    border: 3px solid #ffb6c1;
+    box-shadow: 0 12px 35px rgba(255,182,193,0.25);
+    text-align: center;
+    max-height: 78vh;
+    overflow-y: auto;
+  }
+  .profile-avatar-xl {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    border: 4px solid #ffb6c1;
+    object-fit: cover;
+    margin-bottom: 18px;
+    background: #fff0f3;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+  .profile-name {
+    font-size: 24px;
+    color: #ff69b4;
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
+  .detail-row {
+    display: flex;
+    justify-content: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px dashed #ffe4e1;
+    font-size: 15px;
+    color: #5d4037;
+    text-align: left;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-key {
+    font-weight: 700;
+    color: #ff69b4;
+    min-width: 130px;
+    text-align: left;
+  }
+  .detail-val { flex: 1; text-align: left; }
+
+  /* Transitions */
+  .fade-enter { animation: fadeIn 0.5s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #ffb6c1; border-radius: 10px; }
+</style>
+</head>
+<body>
+
+<!-- Slide 1: Intro -->
+<div id="slide-intro" class="slide bg-main active">
+  <img src="mom_cartoon-1.png" alt="Mama Asiani" class="mom-popup">
+  <div class="tap-hint">✨ Ketuk dimana saja untuk lanjut ✨</div>
+</div>
+
+<!-- Slide 2: Cutscene -->
+<div id="slide-cutscene" class="slide bg-cutscene">
+  <div class="cutscene-container">
+    <img src="cutscene-1.png" class="cutscene-img" id="cs1">
+    <img src="cutscene-2.png" class="cutscene-img" id="cs2">
+    <img src="cutscene-3.png" class="cutscene-img" id="cs3">
+    <div class="flash-overlay" id="flash"></div>
+  </div>
+</div>
+
+<!-- Slide 3: Loading -->
+<div id="slide-loading" class="slide bg-loading">
+  <div class="loading-wrap">
+    <img src="loading.jpg" alt="Loading" class="loading-img">
+    <div class="progress-track">
+      <div class="progress-fill" id="progressBar"></div>
+    </div>
+    <div class="loading-text">Loading</div>
+  </div>
+</div>
+
+<!-- Slide 4: Password -->
+<div id="slide-password" class="slide bg-loading">
+  <div class="password-card fade-enter">
+    <div style="font-size: 50px; margin-bottom: 5px;">🐱</div>
+    <div class="pwd-title">Enter your birthday year</div>
+    <div class="pwd-row">
+      <input type="tel" class="pwd-input" maxlength="1" data-index="0">
+      <input type="tel" class="pwd-input" maxlength="1" data-index="1">
+      <input type="tel" class="pwd-input" maxlength="1" data-index="2">
+      <input type="tel" class="pwd-input" maxlength="1" data-index="3">
+    </div>
+    <button class="enter-btn" onclick="checkPassword()">ENTER <span class="paw-print">🐾</span></button>
+    <div class="pwd-error" id="pwdError">Password salah! Coba lagi 💭</div>
+  </div>
+</div>
+
+<!-- Slide 5: Home -->
+<div id="slide-home" class="slide bg-main">
+  <div class="home-card fade-enter">
+    <div class="profile-header">
+      <img src="mom_cartoon-1.png" class="avatar" alt="Mama">
+      <div class="profile-meta">
+        <h3>Asiani</h3>
+        <p>📅 16 - 05 - 1975</p>
+        <p>♉ Zodiac: Taurus</p>
+      </div>
+    </div>
+    <div class="section-title">🎂 B'day Wishes</div>
+    <div class="wish-card" onclick="openLetter('egy')">
+      <div class="wish-icon-box">💌</div>
+      <div class="wish-label">From Egy</div>
+    </div>
+    <div class="wish-card" onclick="openLetter('nova')">
+      <div class="wish-icon-box">💌</div>
+      <div class="wish-label">From Nova</div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn active" onclick="goHome()">
+      <span class="nav-emoji">🏠</span>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" onclick="goGame()">
+      <span class="nav-emoji">🎮</span>
+      <span>Game</span>
+    </button>
+    <button class="nav-btn" onclick="goProfile()">
+      <span class="nav-emoji">🐱</span>
+      <span>Profile</span>
+    </button>
+  </div>
+</div>
+
+<!-- Slide 6: Letter from Egy -->
+<div id="slide-letter-egy" class="slide bg-letter">
+  <div class="letter-card fade-enter">
+    <button class="letter-close" onclick="closeLetter()">×</button>
+    <div class="letter-from-title">💌 From Egy</div>
+    <div class="letter-body">Happy birthday mamaa 🤍🎂
+Semoga mama panjang umur, sehat selalu, dan selalu diberi kebahagiaan serta rezeki yang lancar di setiap langkah mamaa. Doakan ya maa semoga aku diberi kemudahan dalam bekerja, dilancarkan rezekinya, dipertemukan dengan jodoh yang baik dan tepat pada waktunya 🤍 Aamiin.</div>
+    <div class="letter-stamp">🐾</div>
+  </div>
+</div>
+
+<!-- Slide 7: Letter from Nova -->
+<div id="slide-letter-nova" class="slide bg-letter">
+  <div class="letter-card fade-enter">
+    <button class="letter-close" onclick="closeLetter()">×</button>
+    <div class="letter-from-title">💌 From Nova</div>
+    <div class="letter-body">happy birthday mamaa, semoga panjang umur sampai aku sukses dan sehat selaluu, semoga diberi rezeki dan kebahagiaan selalu menyertai, maaf kalau aku ada salah yang sengaja or tdk disengajaa, doakan ya maa tanggal 25 mei nanti aku lolos snbt pil. 1 ya maa, aamiin. n happy birthdayyy💞💞💟💟🫶🏻🫶🏻</div>
+    <div class="letter-stamp">🐾</div>
+  </div>
+</div>
+
+<!-- Slide 8: Game Intro -->
+<div id="slide-game-intro" class="slide bg-main">
+  <div class="game-intro-box fade-enter">
+    <div class="cake-illus">🎂</div>
+    <div class="game-title">Cake Decoration</div>
+    <div class="game-sub">Hias kue ulang tahun untuk Mama!</div>
+    <button class="start-btn" onclick="startGame()">START</button>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="goHome()">
+      <span class="nav-emoji">🏠</span>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn active" onclick="goGame()">
+      <span class="nav-emoji">🎮</span>
+      <span>Game</span>
+    </button>
+    <button class="nav-btn" onclick="goProfile()">
+      <span class="nav-emoji">🐱</span>
+      <span>Profile</span>
+    </button>
+  </div>
+</div>
+
+<!-- Slide 9: Cake Builder -->
+<div id="slide-builder" class="slide bg-loading">
+  <div class="builder-wrap fade-enter">
+    <div class="cake-stage" id="cakeStage">
+      <div class="stand-base"></div>
+      <div class="stand-stem"></div>
+      <div class="stand-plate"></div>
+      <div class="cake-body"></div>
+      <div class="layer-butter" id="layerButter"></div>
+      <div class="layer-ganache" id="layerGanache">
+        <div class="ganache-drip" style="left:15px;height:25px"></div>
+        <div class="ganache-drip" style="left:45px;height:35px"></div>
+        <div class="ganache-drip" style="left:80px;height:28px"></div>
+        <div class="ganache-drip" style="left:115px;height:32px"></div>
+        <div class="ganache-drip" style="left:145px;height:22px"></div>
+      </div>
+      <div class="layer-topper" id="layerTopper"></div>
+      <div class="layer-candles" id="layerCandles"></div>
+    </div>
+
+    <div class="options-panel" id="optionsPanel"></div>
+
+    <div class="cat-buttons">
+      <button class="cat-btn active" data-cat="butter" onclick="selectCategory('butter')">
+        <span class="cat-emoji">🧁</span>
+        <span>Butter</span>
+      </button>
+      <button class="cat-btn" data-cat="ganache" onclick="selectCategory('ganache')">
+        <span class="cat-emoji">🍫</span>
+        <span>Ganache</span>
+      </button>
+      <button class="cat-btn" data-cat="topper" onclick="selectCategory('topper')">
+        <span class="cat-emoji">⭐</span>
+        <span>Topper</span>
+      </button>
+      <button class="cat-btn" data-cat="candle" onclick="selectCategory('candle')">
+        <span class="cat-emoji">🕯️</span>
+        <span>Candle</span>
+      </button>
+    </div>
+
+    <button class="builder-check" id="builderCheck" onclick="finishBuilder()">✓</button>
+  </div>
+</div>
+
+<!-- Slide 10: Final Cake Preview -->
+<div id="slide-final-preview" class="slide bg-loading">
+  <div class="final-cake-wrap fade-enter">
+    <div class="final-cake-stage" id="finalCakeStage"></div>
+    <button class="action-btn" onclick="goMakeWish()">Make A Wish! ✨</button>
+  </div>
+</div>
+
+<!-- Slide 11: Make A Wish -->
+<div id="slide-make-wish" class="slide bg-loading">
+  <div class="wish-container fade-enter">
+    <div style="font-size: 40px; margin-bottom: 10px;">🌟</div>
+    <h2 style="color:#ff69b4; margin-bottom:10px;">Make A Wish!</h2>
+    <textarea class="wish-input-area" id="wishText" placeholder="Ketik harapanmu di sini..."></textarea>
+    <button class="action-btn" onclick="submitWish()">✓</button>
+  </div>
+</div>
+
+<!-- Slide 12: Blow Candle -->
+<div id="slide-blow" class="slide bg-loading">
+  <div class="final-cake-wrap fade-enter">
+    <div class="final-cake-stage" id="blowCakeStage"></div>
+    <button class="action-btn" onclick="blowCandle()" style="background:linear-gradient(135deg,#87ceeb,#4682b4);">Tiup Lilin Nya! 💨</button>
+  </div>
+  <div class="wind-layer" id="windLayer"></div>
+</div>
+
+<!-- Slide 13: Final Look -->
+<div id="slide-final-look" class="slide bg-loading">
+  <div class="final-cake-wrap fade-enter" style="position:relative;">
+    <button class="letter-close" style="position:absolute; top:-40px; right:0;" onclick="goHome()">×</button>
+    <div class="final-cake-stage" id="finalLookStage"></div>
+    <p style="margin-top:15px; color:#8d6e63; font-weight:600;">🎉 Selamat Ulang Tahun Mama! 🎉</p>
+  </div>
+</div>
+
+<!-- Slide 14: Profile -->
+<div id="slide-profile" class="slide bg-main">
+  <div class="profile-card fade-enter">
+    <img src="mom_cartoon-1.png" class="profile-avatar-xl" alt="Mama">
+    <div class="profile-name">Asiani</div>
+    <div class="detail-row"><span class="detail-key">📅 Date of Birth</span><span class="detail-val">16 - 05 - 1975</span></div>
+    <div class="detail-row"><span class="detail-key">🎂 Age</span><span class="detail-val">51 y.o</span></div>
+    <div class="detail-row"><span class="detail-key">♉ Zodiac</span><span class="detail-val">Taurus</span></div>
+    <div class="detail-row"><span class="detail-key">💫 Personality</span><span class="detail-val">Penyayang, Peduli, Keras Kepala</span></div>
+    <div class="detail-row"><span class="detail-key">🍽️ Fav. Food</span><span class="detail-val">Ikan Bakar, Sayur Asem</span></div>
+    <div class="detail-row"><span class="detail-key">🍹 Fav. Drink</span><span class="detail-val">Es Campur, Es Buah</span></div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="goHome()">
+      <span class="nav-emoji">🏠</span>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" onclick="goGame()">
+      <span class="nav-emoji">🎮</span>
+      <span>Game</span>
+    </button>
+    <button class="nav-btn active" onclick="goProfile()">
+      <span class="nav-emoji">🐱</span>
+      <span>Profile</span>
+    </button>
+  </div>
+</div>
+
+<script>
+// State
+let currentSlide = 'slide-intro';
+let builderState = { butter: null, ganache: null, topper: null, candle: null };
+let currentCategory = 'butter';
+
+// Cake options data
+const cakeOptions = {
+  butter: [
+    { id: 'pink', color: '#ffc0cb', label: '' },
+    { id: 'blue', color: '#add8e6', label: '' },
+    { id: 'purple', color: '#dda0dd', label: '' },
+    { id: 'yellow', color: '#fffacd', label: '' },
+    { id: 'green', color: '#c1ffc1', label: '' }
+  ],
+  ganache: [
+    { id: 'choco', color: '#5d4037', label: '' },
+    { id: 'pink', color: '#ff69b4', label: '' },
+    { id: 'orange', color: '#ff8c00', label: '' },
+    { id: 'white', color: '#fffaf0', label: '' },
+    { id: 'matcha', color: '#6b8e23', label: '' }
+  ],
+  topper: [
+    { id: 'text', emoji: '🎂', label: '' },
+    { id: 'cat', emoji: '🐱', label: '' },
+    { id: 'balloon', emoji: '🎈', label: '' },
+    { id: 'star', emoji: '⭐', label: '' },
+    { id: 'heart', emoji: '💖', label: '' }
+  ],
+  candle: [
+    { id: 'pink', emoji: '🕯️', flame: true, label: '' },
+    { id: 'blue', emoji: '🕯️', flame: true, label: '' },
+    { id: 'yellow', emoji: '🕯️', flame: true, label: '' },
+    { id: 'purple', emoji: '🕯️', flame: true, label: '' },
+    { id: 'twist', emoji: '🕯️', flame: true, label: '' }
+  ]
+};
+
+// Navigation helpers
+function showSlide(id) {
+  document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  currentSlide = id;
+}
+
+function goHome() { showSlide('slide-home'); }
+function goGame() { showSlide('slide-game-intro'); }
+function goProfile() { showSlide('slide-profile'); }
+
+// Intro -> Cutscene
+let introTapped = false;
+document.getElementById('slide-intro').addEventListener('click', () => {
+  if (introTapped) return;
+  introTapped = true;
+  playCutscene();
+});
+
+function playCutscene() {
+  showSlide('slide-cutscene');
+  const cs1 = document.getElementById('cs1');
+  const cs2 = document.getElementById('cs2');
+  const cs3 = document.getElementById('cs3');
+  const flash = document.getElementById('flash');
+  
+  cs1.classList.add('show');
+  cs2.classList.remove('show');
+  cs3.classList.remove('show');
+  
+  setTimeout(() => {
+    flash.classList.add('flash');
+    setTimeout(() => {
+      flash.classList.remove('flash');
+      cs1.classList.remove('show');
+      cs2.classList.add('show');
+    }, 500);
+  }, 2000);
+  
+  setTimeout(() => {
+    flash.classList.add('flash');
+    setTimeout(() => {
+      flash.classList.remove('flash');
+      cs2.classList.remove('show');
+      cs3.classList.add('show');
+    }, 500);
+  }, 4500);
+  
+  setTimeout(() => {
+    showSlide('slide-loading');
+    runLoading();
+  }, 7000);
+}
+
+// Loading
+function runLoading() {
+  const bar = document.getElementById('progressBar');
+  bar.style.animation = 'none';
+  bar.offsetHeight; /* trigger reflow */
+  bar.style.animation = 'shimmer 1s linear infinite, loadProgress 3s ease-out forwards';
+  setTimeout(() => {
+    showSlide('slide-password');
+    setupPasswordInputs();
+  }, 3500);
+}
+
+// Password
+function setupPasswordInputs() {
+  const inputs = document.querySelectorAll('.pwd-input');
+  inputs.forEach((inp, idx) => {
+    inp.value = '';
+    inp.addEventListener('input', (e) => {
+      if (e.target.value.length === 1 && idx < 3) {
+        inputs[idx + 1].focus();
+      }
+    });
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+        inputs[idx - 1].focus();
+      }
+      if (e.key === 'Enter') checkPassword();
+    });
+  });
+  if (inputs.length) inputs[0].focus();
+}
+
+function checkPassword() {
+  const inputs = document.querySelectorAll('.pwd-input');
+  const val = Array.from(inputs).map(i => i.value).join('');
+  const error = document.getElementById('pwdError');
+  if (val === '1975') {
+    error.classList.remove('show');
+    showSlide('slide-home');
+  } else {
+    error.classList.add('show');
+    inputs.forEach(i => { i.value = ''; i.style.borderColor = '#ff4444'; });
+    setTimeout(() => {
+      inputs.forEach(i => i.style.borderColor = '');
+    }, 800);
+    if (inputs.length) inputs[0].focus();
+  }
+}
+
+// Letters
+function openLetter(from) {
+  showSlide(from === 'egy' ? 'slide-letter-egy' : 'slide-letter-nova');
+}
+function closeLetter() {
+  showSlide('slide-home');
+}
+
+// Game
+function startGame() {
+  builderState = { butter: null, ganache: null, topper: null, candle: null };
+  currentCategory = 'butter';
+  renderBuilder();
+  showSlide('slide-builder');
+}
+
+function renderBuilder() {
+  // Reset cake layers
+  document.getElementById('layerButter').className = 'layer-butter';
+  document.getElementById('layerButter').style.background = '';
+  document.getElementById('layerGanache').className = 'layer-ganache';
+  document.getElementById('layerGanache').style.background = '';
+  document.getElementById('layerTopper').className = 'layer-topper';
+  document.getElementById('layerTopper').textContent = '';
+  document.getElementById('layerCandles').className = 'layer-candles';
+  document.getElementById('layerCandles').innerHTML = '';
+  
+  // Apply selections
+  if (builderState.butter) {
+    const b = document.getElementById('layerButter');
+    b.classList.add('show');
+    b.style.background = cakeOptions.butter.find(x=>x.id===builderState.butter).color;
+  }
+  if (builderState.ganache) {
+    const g = document.getElementById('layerGanache');
+    g.classList.add('show');
+    g.style.background = cakeOptions.ganache.find(x=>x.id===builderState.ganache).color;
+  }
+  if (builderState.topper) {
+    const t = document.getElementById('layerTopper');
+    t.classList.add('show');
+    t.textContent = cakeOptions.topper.find(x=>x.id===builderState.topper).emoji;
+  }
+  if (builderState.candle) {
+    const c = document.getElementById('layerCandles');
+    c.classList.add('show');
+    const candleData = cakeOptions.candle.find(x=>x.id===builderState.candle);
+    c.innerHTML = '<div class="candle-emoji">' + candleData.emoji + '<div class="flame">🔥</div></div>';
+  }
+  
+  // Render options panel
+  const panel = document.getElementById('optionsPanel');
+  panel.innerHTML = '';
+  const opts = cakeOptions[currentCategory];
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    if (builderState[currentCategory] === opt.id) btn.classList.add('selected');
+    if (currentCategory === 'butter' || currentCategory === 'ganache') {
+      btn.style.background = opt.color;
+    } else {
+      btn.textContent = opt.emoji;
+      btn.style.fontSize = '28px';
+    }
+    btn.onclick = () => selectOption(currentCategory, opt.id);
+    panel.appendChild(btn);
+  });
+  
+  // Update category buttons
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    const cat = btn.dataset.cat;
+    btn.classList.toggle('active', cat === currentCategory);
+    if (builderState[cat]) {
+      btn.classList.add('done');
+    } else {
+      btn.classList.remove('done');
+    }
+  });
+  
+  // Show check if all selected
+  const allDone = builderState.butter && builderState.ganache && builderState.topper && builderState.candle;
+  document.getElementById('builderCheck').classList.toggle('show', allDone);
+}
+
+function selectCategory(cat) {
+  currentCategory = cat;
+  renderBuilder();
+}
+
+function selectOption(cat, id) {
+  builderState[cat] = id;
+  // Auto advance category if possible
+  const order = ['butter','ganache','topper','candle'];
+  const idx = order.indexOf(cat);
+  if (idx < 3 && !builderState[order[idx+1]]) {
+    currentCategory = order[idx+1];
+  }
+  renderBuilder();
+}
+
+function finishBuilder() {
+  // Clone cake to final preview
+  const stage = document.getElementById('cakeStage');
+  const final = document.getElementById('finalCakeStage');
+  final.innerHTML = stage.innerHTML;
+  showSlide('slide-final-preview');
+}
+
+function goMakeWish() {
+  showSlide('slide-make-wish');
+}
+
+function submitWish() {
+  const wish = document.getElementById('wishText').value.trim();
+  if (!wish) {
+    alert('Ketik harapanmu dulu ya! ✨');
+    return;
+  }
+  // Clone cake to blow stage (with candles lit)
+  const stage = document.getElementById('cakeStage');
+  const blow = document.getElementById('blowCakeStage');
+  blow.innerHTML = stage.innerHTML;
+  showSlide('slide-blow');
+}
+
+function blowCandle() {
+  const wind = document.getElementById('windLayer');
+  wind.classList.add('blow');
+  
+  // Clone cake to final look (candles out)
+  const stage = document.getElementById('cakeStage');
+  const look = document.getElementById('finalLookStage');
+  look.innerHTML = stage.innerHTML;
+  // Remove flames
+  look.querySelectorAll('.flame').forEach(f => f.classList.add('out'));
+  
+  setTimeout(() => {
+    wind.classList.remove('blow');
+    showSlide('slide-final-look');
+  }, 2000);
+}
+
+// Handle visibilitychange to not break animations
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && currentSlide === 'slide-loading') {
+    runLoading();
+  }
+});
+</script>
+</body>
+</html>
